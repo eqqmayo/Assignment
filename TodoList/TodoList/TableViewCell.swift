@@ -32,7 +32,7 @@ extension String {
         return attributeString
     }
     
-    func removeStrikeThrough() -> NSAttributedString {   // (5)
+    func removeStrikeThrough() -> NSAttributedString {   
             let attributeString = NSMutableAttributedString(string: self)
             attributeString.removeAttribute(
               NSAttributedString.Key.strikethroughStyle, range: NSMakeRange(0, attributeString.length))

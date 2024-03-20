@@ -16,7 +16,7 @@ class ViewController: UIViewController {
         Todo(title: "스위치를 눌러 할 일을 완료하세요 ", isDone: false, isHighlighted: false),
         Todo(title: "왼쪽으로 스와이프해 할 일을 삭제하세요", isDone: false, isHighlighted: false),
         Todo(title: "오른쪽으로 스와이프해 할 일을 강조하세요", isDone: false, isHighlighted: false)
-            ]
+    ]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -47,6 +47,7 @@ class ViewController: UIViewController {
 }
 
 extension ViewController: UITableViewDataSource, UITableViewDelegate {
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return todoArray.count
     }
@@ -57,9 +58,7 @@ extension ViewController: UITableViewDataSource, UITableViewDelegate {
         cell.titleLabel.textColor = todoArray[indexPath.row].isHighlighted ? .systemRed : .black
         cell.dateLabel.text = todoArray[indexPath.row].date
         cell.isDoneSwitch.isOn = todoArray[indexPath.row].isDone
-        
         cell.selectionStyle = .none
-        
         return cell
     }
     
@@ -76,7 +75,6 @@ extension ViewController: UITableViewDataSource, UITableViewDelegate {
         let highlight = UIContextualAction(style: .normal, title: "중요") { (UIContextualAction, UIView, success: @escaping (Bool) -> Void) in
             self.todoArray[indexPath.row].isHighlighted = self.todoArray[indexPath.row].isHighlighted ? false : true
             tableView.reloadRows(at: [indexPath], with: .none)
-            tableView.reloadData()
             success(true)
         }
         highlight.backgroundColor = .systemBlue
