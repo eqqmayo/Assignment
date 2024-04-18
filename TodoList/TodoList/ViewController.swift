@@ -27,7 +27,7 @@ class ViewController: UIViewController {
     
     @IBAction func addButtonTapped(_ sender: UIBarButtonItem) {
         let alert = UIAlertController(title: "할 일 추가", message: nil, preferredStyle: .alert)
-        let add = UIAlertAction(title: "추가", style: .default) { _ in
+        let add = UIAlertAction(title: "확인", style: .default) { _ in
             if let tf = alert.textFields?[0] {
                 if tf.text?.isEmpty == false {
                     let todoData = Todo(title: tf.text!, isDone: false, isHighlighted: false)
@@ -57,7 +57,7 @@ extension ViewController: UITableViewDataSource, UITableViewDelegate {
         cell.titleLabel.text = todoArray[indexPath.row].title
         cell.titleLabel.textColor = todoArray[indexPath.row].isHighlighted ? .systemRed : .black
         cell.dateLabel.text = todoArray[indexPath.row].date
-        cell.isDoneSwitch.isOn = todoArray[indexPath.row].isDone
+//        cell.isDoneSwitch.isOn = todoArray[indexPath.row].isDone
         cell.selectionStyle = .none
         return cell
     }

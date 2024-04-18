@@ -13,7 +13,12 @@ class TableViewCell: UITableViewCell {
     @IBOutlet weak var dateLabel: UILabel!
     @IBOutlet weak var isDoneSwitch: UISwitch!
     
+    override func awakeFromNib() {
+        isDoneSwitch.isOn = UserDefaults.standard.bool(forKey: "switchState")
+    }
+    
     @IBAction func switchValueChanged(_ sender: Any) {
+        UserDefaults.standard.set(isDoneSwitch.isOn, forKey: "switchState")
         if isDoneSwitch.isOn {
             titleLabel.textColor = .gray
             titleLabel.attributedText = titleLabel.text?.strikeThrough()
