@@ -6,12 +6,17 @@
 //
 
 import UIKit
+import CoreData
 
 class ViewController: BaseViewController {
     
     var productList: [Product] = []
-
+    var present: Product?
+    var n = 1
+    
     let apiManager = APIManager()
+    
+    var container: NSPersistentContainer!
 
     lazy var thumnailImageView: UIImageView = {
         let imageView = UIImageView()
@@ -92,7 +97,6 @@ class ViewController: BaseViewController {
         view.backgroundColor = .white
         setupNaviBar()
         setupData()
-        print(productList)
     }
     
     // SnapKit 연습
@@ -150,9 +154,9 @@ class ViewController: BaseViewController {
         apiManager.fetchProducts { products in
             if let products = products {
                 self.productList.append(contentsOf: products)
-                print(products)
                 DispatchQueue.main.async {
-                    self.setupProduct(id: 13)
+                    self.setupProduct(n: 0)
+                    self.present = self.productList[0]
                 }
             } else {
                 print("setupData failed")
@@ -160,8 +164,10 @@ class ViewController: BaseViewController {
         }
     }
     
-    func setupProduct(id: Int) {
-        let product = productList[id]
+    func setupProduct(n: Int) {
+        let product = productList[n]
+        self.present = product
+        
         apiManager.fetchImage(imageUrl: product.thumbnail) { image in
             DispatchQueue.main.async {
                 self.thumnailImageView.image = image
@@ -178,18 +184,51 @@ class ViewController: BaseViewController {
     }
     
     @objc func addButtonTapped() {
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        self.container = appDelegate.persistentContainer
         
+        let context = container.viewContext
+    
+        let request = MyProduct.fetchRequest()
+        request.predicate = NSPredicate(format: "id = %d", (present?.id)!)
+        request.fetchLimit = 1
+        
+        do {
+            let count = try context.count(for: request)
+            if count == 0 {
+                let entity = NSEntityDescription.entity(forEntityName: "MyProduct", in: context)
+                if let entity = entity {
+                    let myProduct = NSManagedObject(entity: entity, insertInto: context)
+                    myProduct.setValue(present?.id, forKey: "id")
+                    myProduct.setValue(present?.title, forKey: "title")
+                    myProduct.setValue(present?.price, forKey: "price")
+                }
+                try context.save()
+            }
+        } catch {
+            print(error.localizedDescription)
+        }
     }
     
     @objc func nextButtonTapped() {
-        let id = Int.random(in: 0...29)
-        setupProduct(id: id)
+        if n < 30 {
+            setupProduct(n: n)
+        }
+        n += 1
     }
     
     @objc func wishListButtonTapped() {
         let wishListVC = WishListViewController()
-        wishListVC.modalPresentationStyle = .fullScreen
+        let request = MyProduct.fetchRequest()
+        do {
+            let appDelegate = UIApplication.shared.delegate as! AppDelegate
+            self.container = appDelegate.persistentContainer
+            
+            let myProduct = try self.container.viewContext.fetch(request)
+            wishListVC.wishList = myProduct
+        } catch {
+            print(error)
+        }
         self.show(wishListVC, sender: nil)
     }
 }
-

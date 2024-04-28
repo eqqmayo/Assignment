@@ -10,7 +10,7 @@ import SnapKit
 
 class MyCollectionViewCell: UICollectionViewCell {
     
-    let label: UILabel = {
+    let myProductLabel: UILabel = {
         let label = UILabel()
         label.text = "[1] iPhone 9 - 549$"
         return label
@@ -27,10 +27,11 @@ class MyCollectionViewCell: UICollectionViewCell {
     }
     
     func setupLabel() {
-        self.contentView.addSubview(label)
-        label.snp.makeConstraints { make in
+        self.contentView.addSubview(myProductLabel)
+        myProductLabel.snp.makeConstraints { make in
             make.centerY.equalTo(contentView)
             make.leading.equalTo(contentView).offset(20)
+            make.trailing.equalTo(contentView).offset(-20)
         }
     }
         

@@ -10,6 +10,8 @@ import SnapKit
 
 class WishListViewController: UIViewController {
     
+    var wishList: [MyProduct] = []
+    
     var collectionView: UICollectionView!
 
     override func viewDidLoad() {
@@ -36,11 +38,13 @@ class WishListViewController: UIViewController {
 extension WishListViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        9
+        return wishList.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MyCell", for: indexPath) as? MyCollectionViewCell else { fatalError("Failed to load cell") }
+        let product = wishList[indexPath.row]
+        cell.myProductLabel.text = "[\(product.id)] " + product.title! + " - \(product.price)$"
         return cell
     }
     

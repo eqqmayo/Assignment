@@ -17,7 +17,6 @@
 		B68A4AF02BDE0FCB008E25C5 /* BaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68A4AEF2BDE0FCB008E25C5 /* BaseViewController.swift */; };
 		B68A4AF22BDE1B7C008E25C5 /* Product.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68A4AF12BDE1B7C008E25C5 /* Product.swift */; };
 		B68A4AF72BDE1F01008E25C5 /* APIManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68A4AF62BDE1F01008E25C5 /* APIManager.swift */; };
-		B68A4AF92BDE1F0F008E25C5 /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68A4AF82BDE1F0F008E25C5 /* CoreDataManager.swift */; };
 		B68A4AFB2BDE3AE2008E25C5 /* WishListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68A4AFA2BDE3AE2008E25C5 /* WishListViewController.swift */; };
 		B68A4AFD2BDE3F85008E25C5 /* MyCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68A4AFC2BDE3F85008E25C5 /* MyCollectionViewCell.swift */; };
 		F73ECB8E38C141D643F53F2F /* Pods_WishList.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 86374450A9209E76390A0A0B /* Pods_WishList.framework */; };
@@ -39,7 +38,6 @@
 		B68A4AEF2BDE0FCB008E25C5 /* BaseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseViewController.swift; sourceTree = "<group>"; };
 		B68A4AF12BDE1B7C008E25C5 /* Product.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Product.swift; sourceTree = "<group>"; };
 		B68A4AF62BDE1F01008E25C5 /* APIManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIManager.swift; sourceTree = "<group>"; };
-		B68A4AF82BDE1F0F008E25C5 /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
 		B68A4AFA2BDE3AE2008E25C5 /* WishListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WishListViewController.swift; sourceTree = "<group>"; };
 		B68A4AFC2BDE3F85008E25C5 /* MyCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyCollectionViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -85,7 +83,6 @@
 				B68A4AE42BDE0F96008E25C5 /* Assets.xcassets */,
 				B68A4AE62BDE0F96008E25C5 /* LaunchScreen.storyboard */,
 				B68A4AE92BDE0F96008E25C5 /* Info.plist */,
-				B68A4AE12BDE0F94008E25C5 /* WishList.xcdatamodeld */,
 			);
 			path = WishList;
 			sourceTree = "<group>";
@@ -95,7 +92,7 @@
 			children = (
 				B68A4AF12BDE1B7C008E25C5 /* Product.swift */,
 				B68A4AF62BDE1F01008E25C5 /* APIManager.swift */,
-				B68A4AF82BDE1F0F008E25C5 /* CoreDataManager.swift */,
+				B68A4AE12BDE0F94008E25C5 /* WishList.xcdatamodeld */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -258,7 +255,6 @@
 				B68A4ADB2BDE0F94008E25C5 /* SceneDelegate.swift in Sources */,
 				B68A4AF22BDE1B7C008E25C5 /* Product.swift in Sources */,
 				B68A4AFD2BDE3F85008E25C5 /* MyCollectionViewCell.swift in Sources */,
-				B68A4AF92BDE1F0F008E25C5 /* CoreDataManager.swift in Sources */,
 				B68A4AFB2BDE3AE2008E25C5 /* WishListViewController.swift in Sources */,
 				B68A4AF72BDE1F01008E25C5 /* APIManager.swift in Sources */,
 			);
