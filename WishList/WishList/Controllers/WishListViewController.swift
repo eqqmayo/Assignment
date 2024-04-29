@@ -32,9 +32,46 @@ class WishListViewController: UIViewController {
         collectionView.snp.makeConstraints {
             $0.edges.equalTo(view.safeAreaLayoutGuide)
         }
+        
+        let swipeGesture = UISwipeGestureRecognizer(target: self, action: #selector(handleSwipeGesture(_:)))
+        swipeGesture.direction = .left
+        collectionView.addGestureRecognizer(swipeGesture)
+    }
+    
+    @objc func handleSwipeGesture(_ gesture: UISwipeGestureRecognizer) {
+        let point = gesture.location(in: collectionView)
+        guard let indexPath = collectionView.indexPathForItem(at: point) else { return }
+        
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        let context = appDelegate.persistentContainer.viewContext
+        
+        let request = MyProduct.fetchRequest()
+        request.predicate = NSPredicate(format: "id = %d", wishList[indexPath.row].id)
+
+        do {
+            let product = try context.fetch(request)
+            if let productToDelete = product.first {
+                context.delete(productToDelete)
+            }
+        } catch {
+            print("Error while fetching or deleting object: \(error)")
+        }
+        
+        do {
+            try context.save()
+        } catch {
+            print("Failed to save context: \(error)")
+        }
+        
+        wishList.remove(at: indexPath.row)
+        
+        collectionView.performBatchUpdates({
+            collectionView.deleteItems(at: [indexPath])
+        }, completion: nil)
     }
 }
 
+// 컬렉션뷰 연습
 extension WishListViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -56,5 +93,4 @@ extension WishListViewController: UICollectionViewDataSource, UICollectionViewDe
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return 1
     }
-
 }

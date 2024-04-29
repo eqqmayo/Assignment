@@ -33,6 +33,5 @@ class MyCollectionViewCell: UICollectionViewCell {
             make.leading.equalTo(contentView).offset(20)
             make.trailing.equalTo(contentView).offset(-20)
         }
-    }
-        
+    }        
 }
