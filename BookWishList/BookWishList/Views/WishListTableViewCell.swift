@@ -32,14 +32,15 @@ class WishListTableViewCell: UITableViewCell {
         label.text = "20,000원"
         label.textAlignment = .right
         label.font = .systemFont(ofSize: 15)
+        label.setContentCompressionResistancePriority(.required, for: .horizontal)
         return label
     }()
     
     lazy var stackView: UIStackView = {
         let stview = UIStackView(arrangedSubviews: [titleLabel, writerLabel, priceLabel])
-        stview.spacing = 20
+        stview.spacing = 10
         stview.axis = .horizontal
-        stview.distribution = .equalSpacing
+        stview.distribution = .fillProportionally
         stview.alignment = .fill
         return stview
     }()

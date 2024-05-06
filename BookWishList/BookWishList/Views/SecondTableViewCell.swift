@@ -21,7 +21,7 @@ class SecondTableViewCell: UITableViewCell {
     var writerLabel: UILabel = {
         let label = UILabel()
         label.text = "나관중"
-        label.textAlignment = .left
+        label.textAlignment = .right
         label.textColor = .gray
         label.font = .systemFont(ofSize: 15)
         return label
@@ -29,8 +29,9 @@ class SecondTableViewCell: UITableViewCell {
     
     lazy var stackView: UIStackView = {
         let stview = UIStackView(arrangedSubviews: [titleLabel, writerLabel])
+        stview.spacing = 10
         stview.axis = .horizontal
-        stview.distribution = .fill
+        stview.distribution = .fillProportionally
         stview.alignment = .fill
         return stview
     }()

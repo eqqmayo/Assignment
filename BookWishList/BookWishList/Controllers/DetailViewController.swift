@@ -8,7 +8,13 @@
 import UIKit
 import CoreData
 
+protocol addAlertDelegate {
+    func addAlert()
+}
+
 class DetailViewController: UIViewController {
+    
+    var delegate: addAlertDelegate?
     
     var container: NSPersistentContainer!
     
@@ -35,6 +41,7 @@ class DetailViewController: UIViewController {
     
     var priceLabel: UILabel = {
         let label = UILabel()
+        label.font = .boldSystemFont(ofSize: 18)
         label.text = "20,000원"
         return label
     }()
@@ -60,7 +67,7 @@ class DetailViewController: UIViewController {
         let button = UIButton()
         button.setTitle("담기", for: .normal)
         button.titleLabel?.font = .boldSystemFont(ofSize: 20)
-        button.backgroundColor = .systemYellow
+        button.backgroundColor = .systemMint
         button.layer.cornerRadius = 20
         button.addTarget(self, action: #selector(addButtonTapped), for: .touchUpInside)
        return button
@@ -77,10 +84,12 @@ class DetailViewController: UIViewController {
     
     lazy var buttonStackView: UIStackView = {
         let stview = UIStackView(arrangedSubviews: [cancelButton, addButton])
+        let ratioConstraint = NSLayoutConstraint(item: addButton, attribute: .width, relatedBy: .equal, toItem: cancelButton, attribute: .width, multiplier: 3, constant: 0)
+        NSLayoutConstraint.activate([ratioConstraint])
         stview.spacing = 10
         stview.axis = .horizontal
         stview.alignment = .fill
-        stview.distribution = .fillEqually
+        stview.distribution = .fill
         return stview
     }()
     
@@ -143,5 +152,7 @@ class DetailViewController: UIViewController {
         } catch {
             print(error)
         }
+        self.dismiss(animated: true)
+        delegate?.addAlert()
     }
 }

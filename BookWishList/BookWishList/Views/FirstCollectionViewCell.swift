@@ -7,9 +7,9 @@
 
 import UIKit
 
-class RecentCollectionViewCell: UICollectionViewCell {
+class FirstCollectionViewCell: UICollectionViewCell {
     
-    static let identifier = "RecentCollectionViewCell"
+    static let identifier = "FirstCollectionViewCell"
     
     var thumbnailImageView: UIImageView = {
         let imageView = UIImageView()

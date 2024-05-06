@@ -13,7 +13,7 @@ class FirstTableViewCell: UITableViewCell, UICollectionViewDataSource, UICollect
     
     var collectionView: UICollectionView!
 
-    var recentBookList: [(String, UIImage)] = []
+    var recentBookList: [UIImage] = []
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: .default, reuseIdentifier: reuseIdentifier)
@@ -30,7 +30,7 @@ class FirstTableViewCell: UITableViewCell, UICollectionViewDataSource, UICollect
         layout.scrollDirection = .horizontal
         layout.itemSize = CGSize(width: 70, height: 70)
         collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collectionView.register(RecentCollectionViewCell.self, forCellWithReuseIdentifier: RecentCollectionViewCell.identifier)
+        collectionView.register(FirstCollectionViewCell.self, forCellWithReuseIdentifier: FirstCollectionViewCell.identifier)
         collectionView.dataSource = self
         collectionView.delegate = self
         collectionView.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
@@ -49,8 +49,8 @@ class FirstTableViewCell: UITableViewCell, UICollectionViewDataSource, UICollect
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "RecentCollectionViewCell", for: indexPath) as! RecentCollectionViewCell
-        cell.thumbnailImageView.image = recentBookList[indexPath.row].1
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: FirstCollectionViewCell.identifier, for: indexPath) as! FirstCollectionViewCell
+        cell.thumbnailImageView.image = recentBookList[indexPath.row]
         return cell
     }
 }

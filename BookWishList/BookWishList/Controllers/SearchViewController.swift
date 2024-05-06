@@ -8,11 +8,12 @@
 import UIKit
 import SnapKit
 
-class SearchViewController: UIViewController {
+class SearchViewController: UIViewController, addAlertDelegate {
 
     let apiManager = APIManager()
 
     var resultBookList: [Document] = []
+    var duplicated: [String] = []
     
     let sections = ["최근 본 책", "검색 결과"]
     
@@ -34,6 +35,13 @@ class SearchViewController: UIViewController {
         setupSearchBar()
         setupTableView()
         configureUI()
+    }
+    
+    func addAlert() {
+        let alert = UIAlertController(title: "담기 완료", message: "위시리스트에 책을 담았습니다!", preferredStyle: .alert)
+        let cancel = UIAlertAction(title: "닫기", style: .cancel)
+        alert.addAction(cancel)
+        self.present(alert, animated: true, completion: nil)
     }
     
     func setupSearchBar() {
@@ -154,6 +162,8 @@ extension SearchViewController: UITableViewDataSource, UITableViewDelegate {
         if indexPath.section == 1 {
             let detailVC = DetailViewController()
             let book = resultBookList[indexPath.row]
+    
+            detailVC.delegate = self
             detailVC.titleLabel.text = book.title
             detailVC.writerLabel.text = book.authors.joined(separator: ",")
             
@@ -161,13 +171,25 @@ extension SearchViewController: UITableViewDataSource, UITableViewDelegate {
                 DispatchQueue.main.async {
                     detailVC.thumbnailImageView.image = image
                     if let cell = tableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? FirstTableViewCell {
-                        cell.recentBookList.insert((book.thumbnail, image!), at: 0)
-                        cell.collectionView.reloadData()
+                        if !self.duplicated.contains(book.thumbnail) {
+                            if cell.recentBookList.count < 10 {
+                                cell.recentBookList.insert(image!, at: 0)
+                            } else {
+                                cell.recentBookList.removeLast()
+                                cell.recentBookList.insert(image!, at: 0)
+                            }
+                            cell.collectionView.reloadData()
+                            self.duplicated.append(book.thumbnail)
+                        }
                     }
                 }
             }
             
-            detailVC.priceLabel.text = "\(book.salePrice)원"
+            let formatter = NumberFormatter()
+            formatter.numberStyle = .decimal
+            if let formattedNumber = formatter.string(from: NSNumber(value: book.salePrice)) {
+                detailVC.priceLabel.text = formattedNumber + "원"
+            }
             detailVC.descriptionLabel.text = book.contents
             present(detailVC, animated: true)
         }

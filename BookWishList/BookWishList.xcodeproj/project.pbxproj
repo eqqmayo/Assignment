@@ -21,7 +21,7 @@
 		B66A8D382BE61D0000AFAA14 /* WishListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66A8D372BE61D0000AFAA14 /* WishListViewController.swift */; };
 		B66A8D3A2BE62CAD00AFAA14 /* WishListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66A8D392BE62CAD00AFAA14 /* WishListTableViewCell.swift */; };
 		B66A8D3C2BE6308D00AFAA14 /* SecondTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66A8D3B2BE6308D00AFAA14 /* SecondTableViewCell.swift */; };
-		B66A8D412BE7AFC500AFAA14 /* RecentCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66A8D402BE7AFC500AFAA14 /* RecentCollectionViewCell.swift */; };
+		B66A8D412BE7AFC500AFAA14 /* FirstCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66A8D402BE7AFC500AFAA14 /* FirstCollectionViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -43,7 +43,7 @@
 		B66A8D372BE61D0000AFAA14 /* WishListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WishListViewController.swift; sourceTree = "<group>"; };
 		B66A8D392BE62CAD00AFAA14 /* WishListTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WishListTableViewCell.swift; sourceTree = "<group>"; };
 		B66A8D3B2BE6308D00AFAA14 /* SecondTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecondTableViewCell.swift; sourceTree = "<group>"; };
-		B66A8D402BE7AFC500AFAA14 /* RecentCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentCollectionViewCell.swift; sourceTree = "<group>"; };
+		B66A8D402BE7AFC500AFAA14 /* FirstCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstCollectionViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -122,7 +122,7 @@
 			isa = PBXGroup;
 			children = (
 				B61217A92BE8B99800B623A9 /* FirstTableViewCell.swift */,
-				B66A8D402BE7AFC500AFAA14 /* RecentCollectionViewCell.swift */,
+				B66A8D402BE7AFC500AFAA14 /* FirstCollectionViewCell.swift */,
 				B66A8D3B2BE6308D00AFAA14 /* SecondTableViewCell.swift */,
 				B66A8D392BE62CAD00AFAA14 /* WishListTableViewCell.swift */,
 			);
@@ -263,7 +263,7 @@
 				B66A8D362BE61CF400AFAA14 /* DetailViewController.swift in Sources */,
 				B66A8D382BE61D0000AFAA14 /* WishListViewController.swift in Sources */,
 				B66A8D292BE610F000AFAA14 /* BookWishList.xcdatamodeld in Sources */,
-				B66A8D412BE7AFC500AFAA14 /* RecentCollectionViewCell.swift in Sources */,
+				B66A8D412BE7AFC500AFAA14 /* FirstCollectionViewCell.swift in Sources */,
 				B61217AA2BE8B99800B623A9 /* FirstTableViewCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
