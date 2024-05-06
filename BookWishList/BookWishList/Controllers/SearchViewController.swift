@@ -11,8 +11,10 @@ import SnapKit
 class SearchViewController: UIViewController {
 
     let apiManager = APIManager()
+
+    var resultBookList: [Document] = []
     
-    var bookList: [Document] = []
+    let sections = ["최근 본 책", "검색 결과"]
     
     var searchBar: UISearchBar = {
         let bar = UISearchBar()
@@ -24,29 +26,12 @@ class SearchViewController: UIViewController {
         return bar
     }()
     
-    var recentBookLabel: UILabel = {
-        let label = UILabel()
-        label.text = "최근 본 책"
-        label.font = .boldSystemFont(ofSize: 25)
-        return label
-    }()
-    
-    var collectionView: UICollectionView!
-    
-    var searchResultLabel: UILabel = {
-        let label = UILabel()
-        label.text = "검색 결과"
-        label.font = .boldSystemFont(ofSize: 25)
-        return label
-    }()
-    
     var tableView = UITableView()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
         setupSearchBar()
-        setupCollectionView()
         setupTableView()
         configureUI()
     }
@@ -54,25 +39,13 @@ class SearchViewController: UIViewController {
     func setupSearchBar() {
         searchBar.delegate = self
     }
-    
-    func setupCollectionView() {
-        let layout = UICollectionViewFlowLayout()
-        layout.minimumLineSpacing = 10
-        layout.scrollDirection = .horizontal
-        layout.itemSize = CGSize(width: 80, height: 80)
-        collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collectionView.register(SearchCollectionViewCell.self, forCellWithReuseIdentifier: SearchCollectionViewCell.identifier)
-        collectionView.dataSource = self
-        collectionView.delegate = self
-        collectionView.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
-    }
 
     func setupTableView() {
         tableView.dataSource = self
         tableView.delegate = self
-        tableView.rowHeight = 60
         self.view.addSubview(tableView)
-        self.tableView.register(SearchTableViewCell.self, forCellReuseIdentifier: SearchTableViewCell.identifier)
+        self.tableView.register(FirstTableViewCell.self, forCellReuseIdentifier: FirstTableViewCell.identifier)
+        self.tableView.register(SecondTableViewCell.self, forCellReuseIdentifier: SecondTableViewCell.identifier)
     }
     
     func configureUI() {
@@ -81,33 +54,11 @@ class SearchViewController: UIViewController {
             make.top.leading.trailing.equalTo(view.safeAreaLayoutGuide)
         }
         
-        self.view.addSubview(recentBookLabel)
-        recentBookLabel.snp.makeConstraints { make in
-            make.top.equalTo(searchBar.snp.bottom).offset(20)
-            make.leading.equalToSuperview().offset(20)
-            make.trailing.equalToSuperview().offset(-20)
-        }
-        
-        self.view.addSubview(collectionView)
-        collectionView.snp.makeConstraints { make in
-            make.top.equalTo(recentBookLabel.snp.bottom)
-            make.leading.equalToSuperview().offset(20)
-            make.trailing.equalToSuperview().offset(-20)
-            make.height.equalTo(100)
-        }
-        
-        self.view.addSubview(searchResultLabel)
-        searchResultLabel.snp.makeConstraints { make in
-            make.top.equalTo(collectionView.snp.bottom).offset(20)
-            make.leading.equalToSuperview().offset(20)
-            make.trailing.equalToSuperview().offset(-20)
-        }
-        
         self.view.addSubview(tableView)
         tableView.snp.makeConstraints { make in
-            make.top.equalTo(searchResultLabel.snp.bottom).offset(15)
+            make.top.equalTo(searchBar.snp.bottom)
             make.leading.bottom.equalToSuperview()
-            make.trailing.equalToSuperview().offset(-20)
+            make.trailing.equalToSuperview().offset(-18)
         }
     }
 }
@@ -120,69 +71,105 @@ extension SearchViewController: UISearchBarDelegate {
 
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         
-            if searchBar.text != nil {
-                self.apiManager.fetchBookData(with: searchBar.text!) { books in
-                    DispatchQueue.main.async {
-                        if let books = books {
-                            self.bookList = books
-                            self.tableView.reloadData()
-                            
-                            if self.bookList.isEmpty {
-                                let alert = UIAlertController(title: "검색 결과", message: "찾으시는 도서가 존재하지 않습니다", preferredStyle: .alert)
-                                let cancel = UIAlertAction(title: "닫기", style: .cancel)
-                                alert.addAction(cancel)
-                                self.present(alert, animated: true, completion: nil)
-                            }
+        if searchBar.text != nil {
+            self.apiManager.fetchBookData(with: searchBar.text!) { books in
+                DispatchQueue.main.async {
+                    if let books = books {
+                        self.resultBookList = books
+                        self.tableView.reloadData()
+                        
+                        if self.resultBookList.isEmpty {
+                            let alert = UIAlertController(title: "검색 결과", message: "찾으시는 도서가 존재하지 않습니다", preferredStyle: .alert)
+                            let cancel = UIAlertAction(title: "닫기", style: .cancel)
+                            alert.addAction(cancel)
+                            self.present(alert, animated: true, completion: nil)
                         }
                     }
                 }
-            } else {
-                DispatchQueue.main.async {
-                    searchBar.resignFirstResponder()
-                }
+            }
+        } else {
+            DispatchQueue.main.async {
+                searchBar.resignFirstResponder()
             }
         }
-}
-
-extension SearchViewController: UICollectionViewDataSource, UICollectionViewDelegate  {
-    
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 8
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SearchCollectionViewCell.identifier, for: indexPath) as! SearchCollectionViewCell
-        return cell
     }
 }
 
 extension SearchViewController: UITableViewDataSource, UITableViewDelegate {
     
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return sections.count
+    }
+    
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return sections[section]
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        if indexPath.section == 0 {
+            return 100
+        } else {
+            return 60
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let headerView = UIView()
+        headerView.backgroundColor = .white
+        let headerLabel = UILabel(frame: CGRect(x: 15, y: 5, width: tableView.bounds.size.width, height: 25))
+        headerLabel.font = UIFont.boldSystemFont(ofSize: 25)
+        headerLabel.textColor = UIColor.black
+        headerLabel.text = self.tableView(tableView, titleForHeaderInSection: section)
+        headerView.addSubview(headerLabel)
+        return headerView
+    }
+
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 40
+    }
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return bookList.count
+        if section == 0 {
+            return 1
+        }
+        return resultBookList.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: SearchTableViewCell.identifier, for: indexPath) as! SearchTableViewCell
-        let book = bookList[indexPath.row]
-        cell.titleLabel.text = book.title
-        cell.writerLabel.text = book.authors.joined(separator: ",")
-        cell.selectionStyle = .none
-        return cell
+        if indexPath.section == 0 {
+            let cell = tableView.dequeueReusableCell(withIdentifier: FirstTableViewCell.identifier, for: indexPath) as! FirstTableViewCell
+            cell.selectionStyle = .none
+            return cell
+        } else {
+            let cell = tableView.dequeueReusableCell(withIdentifier: SecondTableViewCell.identifier, for: indexPath) as! SecondTableViewCell
+            let book = resultBookList[indexPath.row]
+            cell.titleLabel.text = book.title
+            cell.writerLabel.text = book.authors.joined(separator: ",")
+            cell.selectionStyle = .none
+            return cell
+        }
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let detailVC = DetailViewController()
-        let book = bookList[indexPath.row]
-        detailVC.titleLabel.text = book.title
-        detailVC.writerLabel.text = book.authors.joined(separator: ",")
-        apiManager.fetchThumbnail(imageUrl: book.thumbnail) { image in
-            DispatchQueue.main.async {
-                detailVC.thumbnailImageView.image = image
+        if indexPath.section == 1 {
+            let detailVC = DetailViewController()
+            let book = resultBookList[indexPath.row]
+            detailVC.titleLabel.text = book.title
+            detailVC.writerLabel.text = book.authors.joined(separator: ",")
+            
+            apiManager.fetchThumbnail(imageUrl: book.thumbnail) { image in
+                DispatchQueue.main.async {
+                    detailVC.thumbnailImageView.image = image
+                    if let cell = tableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? FirstTableViewCell {
+                        cell.recentBookList.insert((book.thumbnail, image!), at: 0)
+                        cell.collectionView.reloadData()
+                    }
+                }
             }
+            
+            detailVC.priceLabel.text = "\(book.salePrice)원"
+            detailVC.descriptionLabel.text = book.contents
+            present(detailVC, animated: true)
         }
-        detailVC.priceLabel.text = "\(book.salePrice)원"
-        detailVC.descriptionLabel.text = book.contents
-        present(detailVC, animated: true)
     }
 }

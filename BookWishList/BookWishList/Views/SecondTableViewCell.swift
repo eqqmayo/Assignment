@@ -7,9 +7,9 @@
 
 import UIKit
 
-class SearchTableViewCell: UITableViewCell {
-
-    static let identifier = "SearchTableViewCell"
+class SecondTableViewCell: UITableViewCell {
+    
+    static let identifier = "SecondTableViewCell"
     
     var titleLabel: UILabel = {
         let label = UILabel()
@@ -29,7 +29,6 @@ class SearchTableViewCell: UITableViewCell {
     
     lazy var stackView: UIStackView = {
         let stview = UIStackView(arrangedSubviews: [titleLabel, writerLabel])
-//        stview.spacing = 20
         stview.axis = .horizontal
         stview.distribution = .fill
         stview.alignment = .fill
@@ -45,7 +44,7 @@ class SearchTableViewCell: UITableViewCell {
         contentView.addSubview(stackView)
         stackView.snp.makeConstraints { make in
             make.centerY.equalTo(contentView)
-            make.leading.equalTo(contentView).offset(30)
+            make.leading.equalTo(contentView).offset(20)
             make.trailing.equalTo(contentView).offset(-10)
         }
     }

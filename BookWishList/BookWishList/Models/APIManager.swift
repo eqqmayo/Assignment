@@ -74,6 +74,8 @@ class APIManager {
                 
                 if let data = data, let image = UIImage(data: data) {
                     completion(image)
+                } else {
+                    completion(UIImage(named: "Image"))
                 }
             }.resume()
         }

@@ -36,7 +36,7 @@ class WishListViewController: UIViewController {
     var addButton: UIButton = {
         let button = UIButton()
         button.setTitle("추가", for: .normal)
-        button.setTitleColor(.systemGreen, for: .normal)
+        button.setTitleColor(.systemBlue, for: .normal)
         button.titleLabel?.font = .boldSystemFont(ofSize: 18)
         button.contentHorizontalAlignment = .right
         button.addTarget(self, action: #selector(addButtonTapped), for: .touchUpInside)
