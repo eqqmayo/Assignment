@@ -7,10 +7,9 @@
 
 import UIKit
 
-class SceneDelegate: UIResponder, UIWindowSceneDelegate {
+class SceneDelegate: UIResponder, UIWindowSceneDelegate, UITabBarControllerDelegate {
 
     var window: UIWindow?
-
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         
@@ -18,14 +17,15 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window = UIWindow(windowScene: windowScene)
         
         let tabBarController = UITabBarController()
-        let SearchVC = SearchViewController()
-        let WishListVC = WishListViewController()
+        let searchVC = SearchViewController()
+        let wishListVC = WishListViewController()
         
         window?.rootViewController = tabBarController
+        tabBarController.delegate = self
         window?.makeKeyAndVisible()
         
         tabBarController.tabBar.backgroundColor = .white
-        tabBarController.setViewControllers([SearchVC, WishListVC], animated: false)
+        tabBarController.setViewControllers([searchVC, wishListVC], animated: false)
         
         if let items = tabBarController.tabBar.items {
             items[0].image = UIImage(systemName: "magnifyingglass")
@@ -34,6 +34,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             items[1].selectedImage = UIImage(systemName: "bookmark.fill")
             items[1].image = UIImage(systemName: "bookmark")
             items[1].title = "Wishlist"
+        }
+    }
+    
+    func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
+        if let wishListVC = viewController as? WishListViewController {
+            wishListVC.setupData()
+            wishListVC.tableView.reloadData()
         }
     }
 

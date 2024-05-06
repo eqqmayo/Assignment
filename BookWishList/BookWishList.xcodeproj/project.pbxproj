@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		470E65F56511AA312D0210B9 /* Pods_BookWishList.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 58212C438E8E65410B2CBFF9 /* Pods_BookWishList.framework */; };
+		B61217A62BE86A9800B623A9 /* APIManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B61217A52BE86A9800B623A9 /* APIManager.swift */; };
+		B61217A82BE86AA100B623A9 /* Book.swift in Sources */ = {isa = PBXBuildFile; fileRef = B61217A72BE86AA100B623A9 /* Book.swift */; };
 		B66A8D1F2BE610F000AFAA14 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66A8D1E2BE610F000AFAA14 /* AppDelegate.swift */; };
 		B66A8D212BE610F000AFAA14 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66A8D202BE610F000AFAA14 /* SceneDelegate.swift */; };
 		B66A8D232BE610F000AFAA14 /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66A8D222BE610F000AFAA14 /* SearchViewController.swift */; };
@@ -25,6 +27,8 @@
 		556C2E70B5B5E72D2DAB54C0 /* Pods-BookWishList.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BookWishList.release.xcconfig"; path = "Target Support Files/Pods-BookWishList/Pods-BookWishList.release.xcconfig"; sourceTree = "<group>"; };
 		58212C438E8E65410B2CBFF9 /* Pods_BookWishList.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BookWishList.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A6CF0532FAC807865D0AA8A6 /* Pods-BookWishList.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BookWishList.debug.xcconfig"; path = "Target Support Files/Pods-BookWishList/Pods-BookWishList.debug.xcconfig"; sourceTree = "<group>"; };
+		B61217A52BE86A9800B623A9 /* APIManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIManager.swift; sourceTree = "<group>"; };
+		B61217A72BE86AA100B623A9 /* Book.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Book.swift; sourceTree = "<group>"; };
 		B66A8D1B2BE610F000AFAA14 /* BookWishList.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BookWishList.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B66A8D1E2BE610F000AFAA14 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B66A8D202BE610F000AFAA14 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -98,7 +102,6 @@
 				B66A8D2A2BE610F200AFAA14 /* Assets.xcassets */,
 				B66A8D2C2BE610F200AFAA14 /* LaunchScreen.storyboard */,
 				B66A8D2F2BE610F200AFAA14 /* Info.plist */,
-				B66A8D272BE610F000AFAA14 /* BookWishList.xcdatamodeld */,
 			);
 			path = BookWishList;
 			sourceTree = "<group>";
@@ -106,6 +109,9 @@
 		B66A8D3D2BE79BFB00AFAA14 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				B61217A72BE86AA100B623A9 /* Book.swift */,
+				B61217A52BE86A9800B623A9 /* APIManager.swift */,
+				B66A8D272BE610F000AFAA14 /* BookWishList.xcdatamodeld */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -246,6 +252,8 @@
 			files = (
 				B66A8D232BE610F000AFAA14 /* SearchViewController.swift in Sources */,
 				B66A8D1F2BE610F000AFAA14 /* AppDelegate.swift in Sources */,
+				B61217A62BE86A9800B623A9 /* APIManager.swift in Sources */,
+				B61217A82BE86AA100B623A9 /* Book.swift in Sources */,
 				B66A8D3C2BE6308D00AFAA14 /* SearchTableViewCell.swift in Sources */,
 				B66A8D3A2BE62CAD00AFAA14 /* WishListTableViewCell.swift in Sources */,
 				B66A8D212BE610F000AFAA14 /* SceneDelegate.swift in Sources */,

@@ -21,25 +21,17 @@ class SearchTableViewCell: UITableViewCell {
     var writerLabel: UILabel = {
         let label = UILabel()
         label.text = "나관중"
-        label.textAlignment = .center
+        label.textAlignment = .left
         label.textColor = .gray
         label.font = .systemFont(ofSize: 15)
         return label
     }()
     
-    var priceLabel: UILabel = {
-        let label = UILabel()
-        label.text = "20,000원"
-        label.textAlignment = .right
-        label.font = .systemFont(ofSize: 15)
-        return label
-    }()
-    
     lazy var stackView: UIStackView = {
-        let stview = UIStackView(arrangedSubviews: [titleLabel, writerLabel, priceLabel])
-        stview.spacing = 20
+        let stview = UIStackView(arrangedSubviews: [titleLabel, writerLabel])
+//        stview.spacing = 20
         stview.axis = .horizontal
-        stview.distribution = .equalSpacing
+        stview.distribution = .fill
         stview.alignment = .fill
         return stview
     }()

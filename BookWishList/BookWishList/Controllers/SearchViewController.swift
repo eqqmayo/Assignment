@@ -10,10 +10,15 @@ import SnapKit
 
 class SearchViewController: UIViewController {
 
+    let apiManager = APIManager()
+    
+    var bookList: [Document] = []
+    
     var searchBar: UISearchBar = {
         let bar = UISearchBar()
-        bar.searchBarStyle = .default
+        bar.searchBarStyle = .minimal
         bar.showsCancelButton = true
+        bar.placeholder = "찾고 싶은 책 제목을 입력하세요"
         bar.searchTextField.backgroundColor = #colorLiteral(red: 0.9459868073, green: 0.9459868073, blue: 0.9459868073, alpha: 1)
         bar.searchTextField.borderStyle = .roundedRect
         return bar
@@ -109,6 +114,34 @@ class SearchViewController: UIViewController {
 
 extension SearchViewController: UISearchBarDelegate {
     
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.resignFirstResponder()
+    }
+
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        
+            if searchBar.text != nil {
+                self.apiManager.fetchBookData(with: searchBar.text!) { books in
+                    DispatchQueue.main.async {
+                        if let books = books {
+                            self.bookList = books
+                            self.tableView.reloadData()
+                            
+                            if self.bookList.isEmpty {
+                                let alert = UIAlertController(title: "검색 결과", message: "찾으시는 도서가 존재하지 않습니다", preferredStyle: .alert)
+                                let cancel = UIAlertAction(title: "닫기", style: .cancel)
+                                alert.addAction(cancel)
+                                self.present(alert, animated: true, completion: nil)
+                            }
+                        }
+                    }
+                }
+            } else {
+                DispatchQueue.main.async {
+                    searchBar.resignFirstResponder()
+                }
+            }
+        }
 }
 
 extension SearchViewController: UICollectionViewDataSource, UICollectionViewDelegate  {
@@ -126,17 +159,30 @@ extension SearchViewController: UICollectionViewDataSource, UICollectionViewDele
 extension SearchViewController: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 8
+        return bookList.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: SearchTableViewCell.identifier, for: indexPath) as! SearchTableViewCell
+        let book = bookList[indexPath.row]
+        cell.titleLabel.text = book.title
+        cell.writerLabel.text = book.authors.joined(separator: ",")
         cell.selectionStyle = .none
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let detailVC = DetailViewController()
+        let book = bookList[indexPath.row]
+        detailVC.titleLabel.text = book.title
+        detailVC.writerLabel.text = book.authors.joined(separator: ",")
+        apiManager.fetchThumbnail(imageUrl: book.thumbnail) { image in
+            DispatchQueue.main.async {
+                detailVC.thumbnailImageView.image = image
+            }
+        }
+        detailVC.priceLabel.text = "\(book.salePrice)원"
+        detailVC.descriptionLabel.text = book.contents
         present(detailVC, animated: true)
     }
 }

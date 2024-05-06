@@ -6,10 +6,15 @@
 //
 
 import UIKit
+import CoreData
 
 class WishListViewController: UIViewController {
+    
+    var bookWishList: [WishBook] = []
+    
+    var container: NSPersistentContainer!
 
-    var deleteButton: UIButton = {
+    lazy var deleteButton: UIButton = {
         let button = UIButton()
         button.setTitle("전체 삭제", for: .normal)
         button.setTitleColor(.gray, for: .normal)
@@ -51,8 +56,22 @@ class WishListViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
+        setupData()
         setupTableView()
         configureUI()
+    }
+    
+    func setupData() {
+        let request = WishBook.fetchRequest()
+        do {
+            let appDelegate = UIApplication.shared.delegate as! AppDelegate
+            self.container = appDelegate.persistentContainer
+            
+            let wishList = try self.container.viewContext.fetch(request)
+            bookWishList = wishList
+        } catch {
+            print(error)
+        }
     }
     
     func setupTableView() {
@@ -87,24 +106,63 @@ class WishListViewController: UIViewController {
     }
     
     @objc func deleteButtonTapped() {
-        
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
+        let context = appDelegate.persistentContainer.viewContext
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "WishBook")
+        let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+
+        do {
+            try context.execute(deleteRequest)
+            try context.save()
+        } catch let error as NSError {
+            print(error)
+        }
+        setupData()
+        tableView.reloadData()
     }
     
     @objc func addButtonTapped() {
-        
+        if let tabBarController = self.tabBarController {
+            tabBarController.selectedIndex = 0
+            if let searchVC = tabBarController.viewControllers?.first as? SearchViewController {
+                searchVC.searchBar.becomeFirstResponder()
+            }
+        }
     }
 }
 
 extension WishListViewController: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 8
+        return bookWishList.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: WishListTableViewCell.identifier, for: indexPath) as! WishListTableViewCell
+        let book = bookWishList[indexPath.row]
+        cell.titleLabel.text = book.title
+        cell.writerLabel.text = book.writer
+        cell.priceLabel.text = book.price
         cell.selectionStyle = .none
         return cell
     }
-
+    
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        
+        if editingStyle == .delete {
+            let bookToDelete = bookWishList[indexPath.row]
+            let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+            context.delete(bookToDelete)
+            
+            do {
+                try context.save()
+            } catch {
+                print(error)
+            }
+            bookWishList.remove(at: indexPath.row)
+            tableView.beginUpdates()
+            tableView.deleteRows(at: [indexPath], with: .fade)
+            tableView.endUpdates()
+        }
+    }
 }
