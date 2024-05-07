@@ -8,14 +8,15 @@
 import UIKit
 import SnapKit
 
-class SearchViewController: UIViewController, addAlertDelegate {
-
+class SearchViewController: UIViewController, addAlertDelegate, CollectionViewCellDelegate {
+    
     let apiManager = APIManager()
-
-    var resultBookList: [Document] = []
-    var duplicated: [String] = []
+    var isInfiniteScroll = true
+    var page = 1
+    var isEnd = false
     
     let sections = ["최근 본 책", "검색 결과"]
+    var resultBookList: [Document] = []
     
     var searchBar: UISearchBar = {
         let bar = UISearchBar()
@@ -42,6 +43,27 @@ class SearchViewController: UIViewController, addAlertDelegate {
         let cancel = UIAlertAction(title: "닫기", style: .cancel)
         alert.addAction(cancel)
         self.present(alert, animated: true, completion: nil)
+    }
+    
+    func didSelectBook(book: Document) {
+        let detailVC = DetailViewController()
+        detailVC.delegate = self
+        detailVC.titleLabel.text = book.title
+        detailVC.writerLabel.text = book.authors.joined(separator: ",")
+        
+        apiManager.fetchThumbnail(imageUrl: book.thumbnail) { image in
+            DispatchQueue.main.async {
+                detailVC.thumbnailImageView.image = image
+            }
+        }
+        
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        if let formattedNumber = formatter.string(from: NSNumber(value: book.salePrice)) {
+            detailVC.priceLabel.text = formattedNumber + "원"
+        }
+        detailVC.descriptionLabel.text = book.contents
+        self.present(detailVC, animated: true, completion: nil)
     }
     
     func setupSearchBar() {
@@ -73,6 +95,11 @@ class SearchViewController: UIViewController, addAlertDelegate {
 
 extension SearchViewController: UISearchBarDelegate {
     
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        page = 1
+        isEnd = false
+    }
+    
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         searchBar.resignFirstResponder()
     }
@@ -80,18 +107,17 @@ extension SearchViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         
         if searchBar.text != nil {
-            self.apiManager.fetchBookData(with: searchBar.text!) { books in
+            self.apiManager.fetchBookData(with: searchBar.text!, to: page) { books in
                 DispatchQueue.main.async {
                     if let books = books {
-                        self.resultBookList = books
+                        self.resultBookList = books.documents
                         self.tableView.reloadData()
-                        
-                        if self.resultBookList.isEmpty {
-                            let alert = UIAlertController(title: "검색 결과", message: "찾으시는 도서가 존재하지 않습니다", preferredStyle: .alert)
-                            let cancel = UIAlertAction(title: "닫기", style: .cancel)
-                            alert.addAction(cancel)
-                            self.present(alert, animated: true, completion: nil)
-                        }
+                    }
+                    if self.resultBookList.isEmpty {
+                        let alert = UIAlertController(title: "검색 결과", message: "찾으시는 도서가 존재하지 않습니다", preferredStyle: .alert)
+                        let cancel = UIAlertAction(title: "닫기", style: .cancel)
+                        alert.addAction(cancel)
+                        self.present(alert, animated: true, completion: nil)
                     }
                 }
             }
@@ -146,6 +172,7 @@ extension SearchViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if indexPath.section == 0 {
             let cell = tableView.dequeueReusableCell(withIdentifier: FirstTableViewCell.identifier, for: indexPath) as! FirstTableViewCell
+            cell.delegate = self
             cell.selectionStyle = .none
             return cell
         } else {
@@ -159,10 +186,23 @@ extension SearchViewController: UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
         if indexPath.section == 1 {
-            let detailVC = DetailViewController()
             let book = resultBookList[indexPath.row]
-    
+            
+            if let cell = tableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? FirstTableViewCell {
+                if !cell.recentBookList.contains(book) {
+                    if cell.recentBookList.count < 10 {
+                        cell.recentBookList.insert(book, at: 0)
+                    } else {
+                        cell.recentBookList.removeLast()
+                        cell.recentBookList.insert(book, at: 0)
+                    }
+                    cell.collectionView.reloadData()
+                }
+            }
+            
+            let detailVC = DetailViewController()
             detailVC.delegate = self
             detailVC.titleLabel.text = book.title
             detailVC.writerLabel.text = book.authors.joined(separator: ",")
@@ -170,18 +210,6 @@ extension SearchViewController: UITableViewDataSource, UITableViewDelegate {
             apiManager.fetchThumbnail(imageUrl: book.thumbnail) { image in
                 DispatchQueue.main.async {
                     detailVC.thumbnailImageView.image = image
-                    if let cell = tableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? FirstTableViewCell {
-                        if !self.duplicated.contains(book.thumbnail) {
-                            if cell.recentBookList.count < 10 {
-                                cell.recentBookList.insert(image!, at: 0)
-                            } else {
-                                cell.recentBookList.removeLast()
-                                cell.recentBookList.insert(image!, at: 0)
-                            }
-                            cell.collectionView.reloadData()
-                            self.duplicated.append(book.thumbnail)
-                        }
-                    }
                 }
             }
             
@@ -192,6 +220,26 @@ extension SearchViewController: UITableViewDataSource, UITableViewDelegate {
             }
             detailVC.descriptionLabel.text = book.contents
             present(detailVC, animated: true)
+        }
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        
+        if scrollView.contentOffset.y > scrollView.contentSize.height - scrollView.bounds.height {
+            if isInfiniteScroll && !isEnd {
+                isInfiniteScroll = false
+                self.page += 1
+                self.apiManager.fetchBookData(with: searchBar.text!, to: page) { books in
+                    DispatchQueue.main.async {
+                        if let books = books {
+                            self.resultBookList.append(contentsOf: books.documents)
+                            self.isEnd = books.isEnd
+                            self.tableView.reloadData()
+                        }
+                        self.isInfiniteScroll = true
+                    }
+                }
+            }
         }
     }
 }

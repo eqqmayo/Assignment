@@ -7,13 +7,21 @@
 
 import UIKit
 
+protocol CollectionViewCellDelegate {
+    func didSelectBook(book: Document)
+}
+
 class FirstTableViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionViewDelegate {
     
     static let identifier = "FirstTableViewCell"
     
+    var delegate: CollectionViewCellDelegate?
+    
+    let apiManager = APIManager()
+    
     var collectionView: UICollectionView!
-
-    var recentBookList: [UIImage] = []
+    
+    var recentBookList: [Document] = []
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: .default, reuseIdentifier: reuseIdentifier)
@@ -50,7 +58,17 @@ class FirstTableViewCell: UITableViewCell, UICollectionViewDataSource, UICollect
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: FirstCollectionViewCell.identifier, for: indexPath) as! FirstCollectionViewCell
-        cell.thumbnailImageView.image = recentBookList[indexPath.row]
+        let book = recentBookList[indexPath.row]
+        apiManager.fetchThumbnail(imageUrl: book.thumbnail) { image in
+            DispatchQueue.main.async {
+                cell.thumbnailImageView.image = image
+            }
+        }
         return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let book = recentBookList[indexPath.row]
+        delegate?.didSelectBook(book: book)
     }
 }

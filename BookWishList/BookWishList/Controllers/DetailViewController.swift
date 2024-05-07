@@ -18,6 +18,15 @@ class DetailViewController: UIViewController {
     
     var container: NSPersistentContainer!
     
+    var scrollView: UIScrollView = {
+        let scrollView = UIScrollView()
+        scrollView.backgroundColor = .white
+        scrollView.showsVerticalScrollIndicator = true
+        return scrollView
+    }()
+    
+    var contentView = UIView()
+    
     var titleLabel: UILabel = {
         let label = UILabel()
         label.text = "삼국지"
@@ -49,7 +58,9 @@ class DetailViewController: UIViewController {
     var descriptionLabel: UILabel = {
         let label = UILabel()
         label.text = "blablabla"
-        label.numberOfLines = 15
+        label.numberOfLines = 0
+        label.textAlignment = .justified
+        label.font = .systemFont(ofSize: 18)
         return label
     }()
     
@@ -74,8 +85,8 @@ class DetailViewController: UIViewController {
     }()
     
     lazy var contentStackView: UIStackView = {
-        let stview = UIStackView(arrangedSubviews: [titleLabel, writerLabel, thumbnailImageView, priceLabel, descriptionLabel])
-        stview.spacing = 10
+        let stview = UIStackView(arrangedSubviews: [titleLabel, writerLabel, thumbnailImageView, priceLabel])
+        stview.spacing = 15
         stview.axis = .vertical
         stview.alignment = .center
         stview.distribution = .equalSpacing
@@ -100,26 +111,42 @@ class DetailViewController: UIViewController {
     }
     
     func configureUI() {
-        [contentStackView, buttonStackView].forEach { view.addSubview($0) }
         
+        view.addSubview(scrollView)
+        scrollView.snp.makeConstraints { make in
+            make.top.leading.trailing.equalToSuperview()
+            make.bottom.equalTo(view.safeAreaLayoutGuide).offset(-90)
+        }
+        
+        scrollView.addSubview(contentView)
+        contentView.snp.makeConstraints { make in
+            make.edges.equalTo(scrollView.contentLayoutGuide)
+            make.width.equalTo(scrollView.frameLayoutGuide)
+        }
+        
+        contentView.addSubview(contentStackView)
+        contentStackView.snp.makeConstraints { make in
+            make.top.equalTo(contentView).offset(30)
+            make.leading.equalTo(contentView).offset(30)
+            make.trailing.equalTo(contentView).offset(-30)
+        }
+
         thumbnailImageView.snp.makeConstraints { make in
             make.height.equalTo(300)
             make.width.equalTo(300)
         }
         
+        contentView.addSubview(descriptionLabel)
         descriptionLabel.snp.makeConstraints { make in
-            make.height.equalTo(200)
-        }
-        
-        contentStackView.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(30)
-            make.leading.equalToSuperview().offset(30)
-            make.trailing.equalToSuperview().offset(-30)
-            make.bottom.equalToSuperview().offset(-120)
-        }
-        
-        buttonStackView.snp.makeConstraints { make in
             make.top.equalTo(contentStackView.snp.bottom).offset(20)
+            make.leading.equalTo(contentView).offset(30)
+            make.trailing.equalTo(contentView).offset(-30)
+            make.bottom.equalTo(contentView).offset(-30)
+        }
+        
+        view.addSubview(buttonStackView)
+        buttonStackView.snp.makeConstraints { make in
+            make.height.equalTo(60)
             make.leading.equalToSuperview().offset(15)
             make.trailing.equalToSuperview().offset(-15)
             make.bottom.equalTo(view.safeAreaLayoutGuide)

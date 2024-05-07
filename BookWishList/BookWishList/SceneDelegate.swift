@@ -24,7 +24,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate, UITabBarControllerDeleg
         tabBarController.delegate = self
         window?.makeKeyAndVisible()
         
-        tabBarController.tabBar.backgroundColor = .white
+        tabBarController.tabBar.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
         tabBarController.setViewControllers([searchVC, wishListVC], animated: false)
         
         if let items = tabBarController.tabBar.items {

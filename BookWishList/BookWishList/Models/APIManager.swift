@@ -10,14 +10,14 @@ import UIKit
 
 class APIManager {
     
-    func fetchBookData(with query: String, completion: @escaping ([Document]?) -> Void) {
-        let urlString = "https://dapi.kakao.com/v3/search/book?target=title&query=\(query)"
+    func fetchBookData(with title: String, to page: Int, completion: @escaping (FetchedBook?) -> Void) {
+        let urlString = "https://dapi.kakao.com/v3/search/book?target=title&query=\(title)&page=\(page)"
         performRequest(with: urlString) { books in
             completion(books)
         }
     }
     
-    func performRequest(with urlString: String, completion: @escaping ([Document]?) -> Void) {
+    func performRequest(with urlString: String, completion: @escaping (FetchedBook?) -> Void) {
         guard let url = URL(string: urlString) else { return }
         
         var request = URLRequest(url: url)
@@ -42,11 +42,10 @@ class APIManager {
                 completion(nil)
             }
         }
-        
         task.resume()
     }
     
-    func parseJSON(_ bookData: Data) -> [Document]? {
+    func parseJSON(_ bookData: Data) -> FetchedBook? {
         let decoder = JSONDecoder()
         
         do {
@@ -55,7 +54,8 @@ class APIManager {
             let myBookList = bookList.map {
                 Document(authors: $0.authors, contents: $0.contents, salePrice: $0.salePrice, thumbnail: $0.thumbnail, title: $0.title)
             }
-            return myBookList
+            let isEnd = decodedData.meta.isEnd
+            return FetchedBook(documents: myBookList, isEnd: isEnd)
             
         } catch {
             print("Parsing failed")
